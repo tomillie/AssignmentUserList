@@ -1,0 +1,65 @@
+﻿@model X.PagedList.IPagedList<User>
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Mvc.Core.Fluent;
+@using X.PagedList.Web.Common;
+
+@{
+    ViewBag.Title = "User list";
+}
+
+<div class="text-center">
+    <h1 class="display-4 mb-5">@ViewBag.Title</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                </th>
+                <th>
+                    @Html.ActionLink(@Html.DisplayNameFor(model => model.First().Name), "Index", new { orderBy = "name" })
+                </th>
+                <th>
+                    @Html.ActionLink(@Html.DisplayNameFor(model => model.First().Email), "Index", new { orderBy = "email" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Company)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var star = item.IsFavorite ? "glyphicon-star" : "glyphicon-star-empty";
+                <tr>
+                    <td>
+                        <a href="@Url.Action("ToggleFavorite", new { userId = item.Id, page = ViewBag.Page, orderBy = ViewBag.OrderBy })">
+                            <span class="glyphicon @star"></span>
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Company)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        @Html.PagedListPager(
+            (IPagedList)Model,
+            page => Url.Action("Index", new { page, orderBy = ViewBag.OrderBy }),
+            new PagedListRenderOptions {
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" }
+            }
+        )
+    </div>
+</div>
